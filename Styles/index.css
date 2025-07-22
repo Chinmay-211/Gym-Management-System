@@ -3,31 +3,31 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-/* Responsive design */
-@media (max-width: 768px) {
+/* Mobile phones (360px - 480px) */
+@media (max-width: 360px) {
   body {
-    padding: 1rem;
+    padding: 0.5rem;
   }
   
   h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
   }
   
   #loginForm {
-    padding: 2rem;
-    border-radius: 1rem;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
   }
   
   input[type="email"],
   input[type="password"] {
-    padding: 0.875rem 1rem;
-    font-size: 0.95rem;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.85rem;
   }
   
   button[type="submit"] {
-    padding: 0.875rem 1.25rem;
-    font-size: 1rem;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -58,30 +58,125 @@
   }
 }
 
-@media (max-width: 360px) {
+/* Medium tablets (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
   body {
-    padding: 0.5rem;
+    padding: 1.25rem;
   }
   
   h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 2.25rem;
+    margin-bottom: 1.75rem;
   }
   
   #loginForm {
-    padding: 1.25rem;
-    border-radius: 0.5rem;
+    padding: 2.25rem;
+    border-radius: 1.25rem;
+    max-width: 450px;
+    margin: 0 auto;
   }
   
   input[type="email"],
   input[type="password"] {
-    padding: 0.625rem 0.75rem;
-    font-size: 0.85rem;
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
   }
   
   button[type="submit"] {
-    padding: 0.625rem 0.875rem;
-    font-size: 0.9rem;
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+  }
+}
+
+/* Tablets (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  body {
+    padding: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 2.75rem;
+    margin-bottom: 2rem;
+  }
+  
+  #loginForm {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2.75rem;
+    border-radius: 1.5rem;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+  }
+  
+  button[type="submit"] {
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+/* Laptops (1025px - 1439px) */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  body {
+    padding: 2rem;
+  }
+  
+  h2 {
+    font-size: 3rem;
+    margin-bottom: 2.25rem;
+  }
+  
+  #loginForm {
+    max-width: 550px;
+    margin: 0 auto;
+    padding: 3rem;
+    border-radius: 1.75rem;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    padding: 1.125rem 1.375rem;
+    font-size: 1.05rem;
+  }
+  
+  button[type="submit"] {
+    padding: 1.125rem 1.75rem;
+    font-size: 1.15rem;
+  }
+}
+
+/* Large screens (1440px and up) */
+@media (min-width: 1440px) {
+  body {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 3.5rem;
+    margin-bottom: 2.5rem;
+  }
+  
+  #loginForm {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 3.5rem;
+    border-radius: 2rem;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    padding: 1.25rem 1.5rem;
+    font-size: 1.1rem;
+  }
+  
+  button[type="submit"] {
+    padding: 1.25rem 2rem;
+    font-size: 1.2rem;
   }
 }
 
