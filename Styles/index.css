@@ -3,6 +3,222 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  #loginForm {
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+  
+  button[type="submit"] {
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0.75rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  #loginForm {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9rem;
+  }
+  
+  button[type="submit"] {
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    padding: 0.5rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  #loginForm {
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  button[type="submit"] {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Large tablet specific adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  body {
+    padding: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 2.75rem;
+  }
+  
+  #loginForm {
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 2.5rem;
+  }
+}
+
+/* Landscape phone adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  body {
+    padding: 0.5rem;
+    justify-content: flex-start;
+    padding-top: 1rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  #loginForm {
+    padding: 1.5rem;
+    max-width: 400px;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    padding: 0.625rem 0.875rem;
+  }
+  
+  button[type="submit"] {
+    padding: 0.625rem 1rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  
+  body::before {
+    display: none;
+  }
+  
+  #loginForm {
+    background: white;
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  
+  h2 {
+    color: black;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    border: 1px solid #000;
+    background: white;
+    color: black;
+  }
+  
+  button[type="submit"] {
+    background: #f0f0f0;
+    color: black;
+    border: 1px solid #000;
+  }
+}
+
+/* Enhanced accessibility for touch devices */
+@media (hover: none) and (pointer: coarse) {
+  input[type="email"],
+  input[type="password"],
+  button[type="submit"] {
+    min-height: 44px;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    padding: 0.875rem 1rem;
+  }
+  
+  button[type="submit"] {
+    padding: 0.875rem 1.25rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  #loginForm {
+    border: 2px solid white;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    border: 2px solid white;
+  }
+  
+  input[type="email"]:focus,
+  input[type="password"]:focus {
+    border: 2px solid #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.5);
+  }
+  
+  button[type="submit"] {
+    border: 2px solid transparent;
+  }
+  
+  button[type="submit"]:focus {
+    border: 2px solid white;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 }
 
 body {

@@ -334,6 +334,74 @@ table {
   transition: all 0.2s ease;
 }
 
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+  
+  button[onclick="logout()"] {
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+  
+  body > *:first-child {
+    margin-top: 100px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  table {
+    font-size: 0.875rem;
+  }
+  
+  thead th,
+  tbody td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  #notificationList li {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  /* Make tables horizontally scrollable on very small screens */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  thead,
+  tbody,
+  tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  thead th {
+    min-width: 120px;
+  }
+  
+  tbody td {
+    min-width: 120px;
+  }
+}
+
 /* Card-like appearance for main content sections */
 body > h2 + table,
 body > h2 + #notificationList {
