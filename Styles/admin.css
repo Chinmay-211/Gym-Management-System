@@ -1,0 +1,554 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  color: #1e293b;
+  line-height: 1.6;
+  min-height: 100vh;
+  padding: 2rem;
+  position: relative;
+}
+
+/* Header with logout button */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e2e8f0;
+  z-index: 100;
+}
+
+/* Logout button in top right */
+button[onclick="logout()"] {
+  position: fixed;
+  top: 1.5rem;
+  right: 2rem;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  z-index: 101;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+button[onclick="logout()"]:hover {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+}
+
+/* Main content with top margin for fixed header */
+body > * {
+  margin-top: 100px;
+}
+
+body > *:first-child {
+  margin-top: 120px;
+}
+
+/* Main heading */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  background: linear-gradient(135deg, #1e40af, #0891b2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtitle paragraph */
+body > p {
+  text-align: center;
+  color: #64748b;
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Section headings */
+h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 3rem 0 1.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid #e2e8f0;
+  position: relative;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, #1e40af, #0891b2);
+  border-radius: 2px;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 2rem 0 1rem 0;
+}
+
+/* Form styling */
+form {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+form:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Input styling */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  transform: translateY(-1px);
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="tel"]:hover,
+input[type="number"]:hover,
+input[type="date"]:hover,
+select:hover,
+textarea:hover {
+  border-color: #94a3b8;
+  background: white;
+}
+
+/* Search input special styling */
+#searchInput {
+  max-width: 400px;
+  margin-bottom: 2rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#searchInput:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Label styling */
+label {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Button styling */
+button[type="submit"],
+button[type="button"],
+button[onclick*="export"],
+button[onclick*="reset"] {
+  background: linear-gradient(135deg, #1e40af, #0891b2);
+  color: white;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+button[type="submit"]:hover,
+button[type="button"]:hover,
+button[onclick*="export"]:hover {
+  background: linear-gradient(135deg, #1d4ed8, #0284c7);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+}
+
+/* Cancel/Reset button styling */
+button[onclick*="reset"],
+button[type="button"] {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+
+button[onclick*="reset"]:hover,
+button[type="button"]:hover {
+  background: linear-gradient(135deg, #4b5563, #374151);
+  box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+}
+
+/* Export button special styling */
+button[onclick*="export"] {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+button[onclick*="export"]:hover {
+  background: linear-gradient(135deg, #047857, #065f46);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: none;
+  margin-bottom: 2rem;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+thead {
+  background: linear-gradient(135deg, #1e40af, #0891b2);
+}
+
+thead th {
+  color: white;
+  font-weight: 600;
+  padding: 1.25rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+}
+
+tbody td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+  background: #f8fafc;
+  transform: scale(1.01);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Action buttons in tables */
+tbody button {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  margin: 0 0.25rem;
+  border-radius: 0.375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Edit buttons */
+tbody button[onclick*="edit"] {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+tbody button[onclick*="edit"]:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+/* Delete buttons */
+tbody button[onclick*="delete"] {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+tbody button[onclick*="delete"]:hover {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+/* HR styling */
+hr {
+  border: none;
+  height: 2px;
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+  margin: 3rem 0;
+  border-radius: 1px;
+}
+
+/* Hidden inputs */
+input[type="hidden"] {
+  display: none;
+}
+
+/* Remove default br spacing */
+br {
+  display: none;
+}
+
+/* Form grid layout for better organization */
+form {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+/* Two-column layout for larger forms */
+form:has(#memberId),
+form:has(#supplementId) {
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+form:has(#memberId) input[type="text"],
+form:has(#memberId) input[type="email"],
+form:has(#memberId) input[type="tel"],
+form:has(#supplementId) input[type="text"],
+form:has(#supplementId) input[type="number"] {
+  margin-bottom: 0;
+}
+
+form:has(#memberId) label,
+form:has(#supplementId) label {
+  margin-bottom: 0;
+}
+
+/* Button container for forms */
+form:has(#memberId) button,
+form:has(#supplementId) button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+/* Textarea full width */
+textarea {
+  grid-column: 1 / -1;
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Select styling improvements */
+select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  appearance: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+  
+  button[onclick="logout()"] {
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+  
+  body > *:first-child {
+    margin-top: 100px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  form {
+    padding: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+  
+  table {
+    font-size: 0.875rem;
+  }
+  
+  thead th,
+  tbody td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  /* Stack table buttons vertically on mobile */
+  tbody button {
+    display: block;
+    width: 100%;
+    margin: 0.25rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  form {
+    padding: 1rem;
+  }
+  
+  /* Make tables horizontally scrollable on very small screens */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  thead,
+  tbody,
+  tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+}
+
+/* Animation for smooth page load */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h1,
+form,
+table {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+form {
+  animation-delay: 0.1s;
+}
+
+table {
+  animation-delay: 0.2s;
+}
+
+/* Status indicators for payment status */
+td:has-text("Paid"),
+option[value="true"]:checked,
+option[value="Paid"]:checked {
+  color: #059669;
+  font-weight: 600;
+}
+
+td:has-text("Pending"),
+option[value="false"]:checked,
+option[value="Pending"]:checked {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* Enhanced focus states for accessibility */
+*:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Loading states */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Form validation styles */
+input:invalid:not(:placeholder-shown) {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+input:valid:not(:placeholder-shown) {
+  border-color: #059669;
+  background: #f0fdf4;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: all 0.2s ease;
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Member Dashboard - Gym</title>
+  <link rel="stylesheet" href="./Styles/member.css">
+</head>
+<body>
+  <h1>Welcome Member</h1>
+
+  <h2>Your Bill Receipts</h2>
+  <table border="1" cellpadding="8">
+    <thead>
+      <tr>
+        <th>Package</th>
+        <th>Amount</th>
+        <th>Bill Date</th>
+        <th>Status</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody id="billBody"></tbody>
+  </table>
+
+  <h2>Notifications</h2>
+  <ul id="notificationList"></ul>
+
+  <br>
+  <button onclick="logout()">Logout</button>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <!-- Firebase Config -->
+  <script src="js/firebase-config.js"></script>
+
+  <script>
+    const db = firebase.firestore();
+
+ firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    console.log("Logged in as:", user.uid);
+    loadMemberName(user.uid); // 👈 NEW
+    loadMemberBills(user.uid);
+    loadNotifications(user.uid);
+  } else {
+    window.location.href = "index.html";
+  }
+});
+
+
+    function loadMemberBills(memberId) {
+      db.collection("bills")
+        .where("MemberUID", "==", memberId)
+        .orderBy("BillDate", "desc")
+        .get()
+        .then((querySnapshot) => {
+          const tbody = document.getElementById("billBody");
+          tbody.innerHTML = "";
+
+          if (querySnapshot.empty) {
+            tbody.innerHTML = `<tr><td colspan="5">No bills found.</td></tr>`;
+            return;
+          }
+
+          querySnapshot.forEach((doc) => {
+            const b = doc.data();
+            console.log("Bill found:", b);
+
+            // Format timestamp safely
+            const billDate = b.BillDate && b.BillDate.toDate
+              ? b.BillDate.toDate().toLocaleString()
+              : b.BillDate;
+
+            tbody.innerHTML += `
+              <tr>
+                <td>${b.Package}</td>
+                <td>₹${b.Amount}</td>
+                <td>${billDate}</td>
+                <td>${b.Status}</td>
+                <td>${b.Description || ""}</td>
+              </tr>`;
+          });
+        }).catch(err => {
+          console.error("Error fetching bills:", err);
+        });
+    }
+
+    function loadNotifications(memberId) {
+      db.collection("members").doc(memberId).collection("notifications")
+        .orderBy("sentAt", "desc")
+        .get()
+        .then((querySnapshot) => {
+          const list = document.getElementById("notificationList");
+          list.innerHTML = "";
+
+          if (querySnapshot.empty) {
+            list.innerHTML = "<li>No notifications.</li>";
+            return;
+          }
+
+          querySnapshot.forEach((doc) => {
+            const n = doc.data();
+            console.log("Notification:", n);
+            const time = n.sentAt && n.sentAt.toDate
+              ? new Date(n.sentAt.toDate()).toLocaleString()
+              : "";
+
+            list.innerHTML += `<li>${n.message} <small>(${time})</small></li>`;
+          });
+        }).catch(err => {
+          console.error("Error fetching notifications:", err);
+        });
+    }
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
+    function loadMemberName(uid) {
+  db.collection("members").doc(uid).get()
+    .then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        const name = data.Name || "Member";
+        document.querySelector("h1").textContent = `Welcome, ${name}`;
+      } else {
+        document.querySelector("h1").textContent = `Welcome, Member`;
+      }
+    })
+    .catch((error) => {
+      console.error("Failed to load member name:", error);
+      document.querySelector("h1").textContent = `Welcome, Member`;
+    });
+}
+
+  </script>
+</body>
+</html>

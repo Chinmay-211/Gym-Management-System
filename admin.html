@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Gym</title>
+  <link rel="stylesheet" href="./Styles/admin.css">
+  <link rel="icon" href="favicon.ico" />
+</head>
+<body>
+  <h1>Welcome, Admin</h1>
+  <p>This is your dashboard. Below are the registered members:</p>
+
+  <h2>Add New Member</h2>
+  <form id="addMemberForm">
+     <input type="hidden" id="memberId" />
+    <input type="text" id="name" placeholder="Name" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="tel" id="phone" placeholder="Phone" required />
+    <label>
+      Payment:
+      <select id="payment">
+        <option value="true">Paid</option>
+        <option value="false">Pending</option>
+      </select>
+    </label>
+    <button type="submit">Add Member</button>
+    <button type="button" onclick="resetMemberForm()">Cancel Edit</button>
+
+  </form>
+
+  <hr />
+  <input type="text" id="searchInput" placeholder="Search by name or email..." />
+  <br><br>
+
+  <table border="1" cellpadding="8" id="membersTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Payment</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="membersBody"></tbody>
+  </table>
+
+  <h2>Create Bill</h2>
+  <form id="createBillForm">
+    <label for="memberSelect">Select Member:</label>
+    <select id="memberSelect" required></select><br><br>
+
+    <label for="packageSelect">Package:</label>
+    <select id="packageSelect" required>
+      <option value="Monthly">Monthly</option>
+      <option value="Quarterly">Quarterly</option>
+      <option value="Yearly">Yearly</option>
+    </select><br><br>
+
+    <input type="number" id="amount" placeholder="Amount" required /><br><br>
+    <input type="date" id="billDate" required /><br><br>
+
+    <label for="status">Payment Status:</label>
+    <select id="status" required>
+      <option value="Paid">Paid</option>
+      <option value="Pending">Pending</option>
+    </select><br><br>
+
+    <input type="text" id="description" placeholder="Description (optional)" /><br><br>
+
+    <button type="submit">Create Bill</button>
+  </form>
+  <h2>Export Billing Report</h2>
+<button onclick="exportBills()">Download Bill Report (CSV)</button>
+
+  <h2>Assign Fee Package</h2>
+<form id="assignPackageForm">
+  <label for="packageMemberSelect">Select Member:</label>
+  <select id="packageMemberSelect" required></select><br><br>
+
+  <label for="assignedPackage">Select Package:</label>
+  <select id="assignedPackage" required>
+    <option value="Monthly">Monthly</option>
+    <option value="Quarterly">Quarterly</option>
+    <option value="Yearly">Yearly</option>
+  </select><br><br>
+
+  <button type="submit">Assign Package</button>
+</form>
+<h2>Assign Notification (Monthly)</h2>
+<form id="notificationForm">
+  <label for="notifyMemberSelect">Select Member:</label>
+  <select id="notifyMemberSelect" required></select><br><br>
+
+  <textarea id="notificationMessage" placeholder="Enter notification message..." rows="3" cols="40" required></textarea><br><br>
+
+  <button type="submit">Send Notification</button>
+</form>
+<h2>Supplement Store Management</h2>
+
+<form id="addSupplementForm">
+  <input type="hidden" id="supplementId" />
+  <input type="text" id="supplementName" placeholder="Supplement Name" required />
+  <input type="number" id="supplementPrice" placeholder="Price (in ₹)" required />
+  <input type="number" id="supplementStock" placeholder="Stock Quantity" required />
+  <textarea id="supplementDesc" placeholder="Description (optional)" rows="2" cols="40"></textarea>
+  <button type="submit">Add Supplement</button>
+  <button type="button" onclick="resetSupplementForm()">Cancel Edit</button>
+
+</form>
+
+<br />
+
+<h3>Available Supplements</h3>
+<table border="1" cellpadding="8" id="supplementTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Stock</th>
+      <th>Description</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="supplementBody"></tbody>
+</table>
+
+<h2>Manage Diet Details</h2>
+<form id="dietForm">
+  <label for="dietMemberSelect">Select Member:</label>
+  <select id="dietMemberSelect" required></select><br><br>
+
+  <label for="dietType">Diet Type:</label>
+  <select id="dietType" required>
+    <option value="Weight Loss">Weight Loss</option>
+    <option value="Muscle Gain">Muscle Gain</option>
+    <option value="General Fitness">General Fitness</option>
+  </select><br><br>
+
+  <textarea id="meals" placeholder="Enter diet meals and timing..." rows="4" cols="40" required></textarea><br><br>
+
+  <button type="submit">Save Diet Plan</button>
+</form>
+
+<h3>Diet Plans</h3>
+<table border="1" cellpadding="8" id="dietTable">
+  <thead>
+    <tr>
+      <th>Member</th>
+      <th>Diet Type</th>
+      <th>Meals</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="dietBody"></tbody>
+</table>
+
+
+  <br />
+  <button onclick="logout()">Logout</button>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <!-- Firebase Config -->
+  <script src="js/firebase-config.js"></script>
+
+  <script>
+    let allMembers = [];
+    // Load dropdown for notifications
+    function exportBills() {
+  const db = firebase.firestore();
+
+  db.collection("bills").get().then((querySnapshot) => {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Name,Email,Package,Amount,BillDate,Status\n";
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const row = [
+        data.Name || "",
+        data.Email || "",
+        data.Package || "",
+        data.Amount || "",
+        data.BillDate || "",
+        data.Status || ""
+      ].join(",");
+
+      csvContent += row + "\n";
+    });
+
+    // Create a downloadable link
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "billing_report.csv");
+    document.body.appendChild(link);
+    link.click();
+  }).catch((error) => {
+    console.error("Error exporting bills:", error);
+    alert("Failed to export report.");
+  });
+}
+
+function loadNotificationDropdown() {
+  const db = firebase.firestore();
+  const select = document.getElementById("notifyMemberSelect");
+  select.innerHTML = "";
+
+  db.collection("members").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const option = document.createElement("option");
+      option.value = doc.id;
+      option.textContent = `${data.Name} (${data.Email})`;
+      select.appendChild(option);
+    });
+  });
+}
+
+// Handle notification send
+document.getElementById("notificationForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const db = firebase.firestore();
+  const memberId = document.getElementById("notifyMemberSelect").value;
+  const message = document.getElementById("notificationMessage").value.trim();
+
+  const timestamp = new Date();
+
+  db.collection("members").doc(memberId).collection("notifications").add({
+    message,
+    sentAt: timestamp,
+  }).then(() => {
+    alert("Notification sent successfully!");
+    document.getElementById("notificationForm").reset();
+  }).catch((error) => {
+    console.error("Error sending notification:", error);
+    alert("Failed to send notification.");
+  });
+});
+
+
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user || user.email !== "admin@gym.com") {
+        window.location.href = "index.html";
+      } else {
+        loadMembers();
+        loadMemberDropdown();
+        loadPackageDropdown();
+        loadNotificationDropdown();
+        loadSupplements();
+        loadDietMemberDropdown();
+
+
+
+      }
+    });
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
+
+    function loadMembers() {
+      const db = firebase.firestore();
+      db.collection("members").get().then((querySnapshot) => {
+        allMembers = [];
+        querySnapshot.forEach((doc) => {
+          allMembers.push({ id: doc.id, ...doc.data() });
+        });
+        displayMembers(allMembers);
+      }).catch((error) => {
+        console.error("Error fetching members:", error);
+      });
+    }
+
+    function displayMembers(members) {
+      const tbody = document.getElementById("membersBody");
+      tbody.innerHTML = "";
+      members.forEach((data) => {
+        const row = `<tr>
+          <td>${data.Name || ""}</td>
+          <td>${data.Email || ""}</td>
+          <td>${data.Phone || ""}</td>
+          <td>${data.Payment ? "Paid" : "Pending"}</td>
+          
+
+          <td>
+            <button onclick="editMember('${data.id}')">Edit</button>
+            <button onclick="deleteMember('${data.id}')">Delete</button>
+          </td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const query = this.value.toLowerCase();
+      const filtered = allMembers.filter((member) =>
+        (member.Name && member.Name.toLowerCase().includes(query)) ||
+        (member.Email && member.Email.toLowerCase().includes(query))
+      );
+      displayMembers(filtered);
+    });
+
+   document.getElementById("addMemberForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+
+  const memberId = document.getElementById("memberId")?.value;
+  const Name = document.getElementById("name").value.trim();
+  const Email = document.getElementById("email").value.trim();
+  const Phone = document.getElementById("phone").value.trim();
+  const Payment = document.getElementById("payment").value === "true";
+
+  const memberData = { Name, Email, Phone, Payment };
+  const defaultPassword = "member@123";
+
+  if (memberId) {
+    db.collection("members").doc(memberId).update(memberData).then(() => {
+      alert("Member updated successfully!");
+      document.getElementById("addMemberForm").reset();
+      loadMembers();
+      loadMemberDropdown();
+    }).catch((error) => {
+      console.error("Error updating member:", error);
+      alert("Failed to update member.");
+    });
+  } else {
+    const adminEmail = auth.currentUser.email;
+    const adminPassword = prompt("Enter admin password to continue:");
+
+    // 👇 Create second temporary app instance
+    const tempApp = firebase.initializeApp(firebase.app().options, "TempApp");
+    const tempAuth = tempApp.auth();
+
+    tempAuth.createUserWithEmailAndPassword(Email, defaultPassword)
+      .then((userCred) => {
+        const newUID = userCred.user.uid;
+
+        // Clean up temporary login by signing out temp auth
+        return tempAuth.signOut().then(() => {
+          // Restore admin session
+          return auth.signInWithEmailAndPassword(adminEmail, adminPassword).then(() => {
+            // Now add the user to Firestore
+            return db.collection("members").doc(newUID).set({
+              ...memberData,
+              uid: newUID
+            });
+          });
+        });
+      })
+      .then(() => {
+        alert("Member added and auth created successfully!");
+        document.getElementById("addMemberForm").reset();
+        loadMembers();
+        loadMemberDropdown();
+        firebase.app("TempApp").delete(); // ✅ clean up temporary instance
+      })
+      .catch((err) => {
+        console.error("Add member failed:", err);
+        alert("Error: " + err.message);
+      });
+  }
+});
+
+
+
+
+    function deleteMember(memberId) {
+      if (confirm("Are you sure you want to delete this member?")) {
+        const db = firebase.firestore();
+        db.collection("members").doc(memberId).delete()
+          .then(() => {
+            alert("Member deleted successfully.");
+            loadMembers();
+            loadMemberDropdown();
+          })
+          .catch((error) => {
+            console.error("Error deleting member:", error);
+            alert("Failed to delete member.");
+          });
+      }
+    }
+
+    function loadMemberDropdown() {
+      const db = firebase.firestore();
+      const select = document.getElementById("memberSelect");
+      select.innerHTML = "";
+
+      db.collection("members").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const option = document.createElement("option");
+          option.value = doc.id;
+          option.textContent = `${data.Name} (${data.Email})`;
+          select.appendChild(option);
+        });
+      });
+    }
+
+    document.getElementById("createBillForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const memberUID = document.getElementById("memberSelect").value;
+  const packageType = document.getElementById("packageSelect").value;
+  const amount = parseFloat(document.getElementById("amount").value);
+  const billDate = firebase.firestore.Timestamp.fromDate(new Date(document.getElementById("billDate").value));
+  const status = document.getElementById("status").value;
+  const description = document.getElementById("description").value;
+
+  const db = firebase.firestore();
+  const currentUser = firebase.auth().currentUser;
+
+  if (!currentUser) {
+    alert("You must be logged in to create a bill.");
+    return;
+  }
+
+  db.collection("members").doc(memberUID).get()
+    .then((doc) => {
+      const member = doc.data();
+
+      return db.collection("bills").add({
+        MemberUID: memberUID,
+        UserID: currentUser.uid, // ✅ Set current user’s UID here
+        Name: member.Name,
+        Email: member.Email,
+        Package: packageType,
+        Amount: amount,
+        BillDate: billDate,
+        Status: status,
+        Description: description,
+        Timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    })
+    .then(() => {
+      alert("Bill created successfully!");
+      document.getElementById("createBillForm").reset();
+    })
+    .catch((error) => {
+      console.error("Error generating bill:", error);
+      alert("Failed to create bill.");
+    });
+});
+
+    // Populate dropdown for package assignment
+function loadPackageDropdown() {
+  const db = firebase.firestore();
+  const select = document.getElementById("packageMemberSelect");
+  select.innerHTML = "";
+
+  db.collection("members").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const option = document.createElement("option");
+      option.value = doc.id;
+      option.textContent = `${data.Name} (${data.Email})`;
+      select.appendChild(option);
+    });
+  });
+}
+
+// Assign package to selected member
+document.getElementById("assignPackageForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const db = firebase.firestore();
+  const memberId = document.getElementById("packageMemberSelect").value;
+  const selectedPackage = document.getElementById("assignedPackage").value;
+
+  db.collection("members").doc(memberId).update({
+    AssignedPackage: selectedPackage
+  }).then(() => {
+    alert("Package assigned successfully!");
+    document.getElementById("assignPackageForm").reset();
+    loadMembers(); // Refresh member list
+  }).catch((error) => {
+    console.error("Error assigning package:", error);
+    alert("Failed to assign package.");
+  });
+});
+// Load supplements from Firestore
+// Load Supplements
+function loadSupplements() {
+  const db = firebase.firestore();
+  const tableBody = document.getElementById("supplementBody");
+  tableBody.innerHTML = "";
+
+  db.collection("supplements").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const row = `<tr>
+        <td>${data.name}</td>
+        <td>₹${data.price}</td>
+        <td>${data.stock}</td>
+        <td>${data.description || ""}</td>
+        <td>
+            <button onclick="editSupplement('${doc.id}', '${data.name}', ${data.price}, ${data.stock}, \`${data.description || ""}\`)">Edit</button>
+            <button onclick="deleteSupplement('${doc.id}')">Delete</button>
+            </td>
+      </tr>`;
+      tableBody.innerHTML += row;
+    });
+  });
+}
+
+// Add Supplement
+document.getElementById("addSupplementForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const db = firebase.firestore();
+  const id = document.getElementById("supplementId").value;
+  const name = document.getElementById("supplementName").value.trim();
+  const price = parseFloat(document.getElementById("supplementPrice").value);
+  const stock = parseInt(document.getElementById("supplementStock").value);
+  const description = document.getElementById("supplementDesc").value.trim();
+
+  const supplementData = { name, price, stock, description };
+
+  if (id) {
+    db.collection("supplements").doc(id).update(supplementData).then(() => {
+      alert("Supplement updated successfully!");
+      document.getElementById("addSupplementForm").reset();
+      loadSupplements();
+    }).catch((err) => {
+      console.error("Update error:", err);
+      alert("Failed to update supplement.");
+    });
+  } else {
+    db.collection("supplements").add(supplementData).then(() => {
+      alert("Supplement added!");
+      document.getElementById("addSupplementForm").reset();
+      loadSupplements();
+    }).catch((err) => {
+      console.error("Add error:", err);
+      alert("Failed to add supplement.");
+    });
+  }
+});
+
+
+
+// Delete Supplement
+function deleteSupplement(id) {
+  const db = firebase.firestore();
+  if (confirm("Are you sure you want to delete this supplement?")) {
+    db.collection("supplements").doc(id).delete().then(() => {
+      alert("Deleted successfully.");
+      loadSupplements();
+    }).catch((err) => {
+      console.error("Error:", err);
+      alert("Failed to delete.");
+    });
+  }
+}
+function editMember(id) {
+  const db = firebase.firestore();
+  const member = allMembers.find(m => m.id === id);
+  if (member) {
+    document.getElementById("memberId").value = member.id;
+    document.getElementById("name").value = member.Name;
+    document.getElementById("email").value = member.Email;
+    document.getElementById("phone").value = member.Phone;
+    document.getElementById("payment").value = member.Payment ? "true" : "false";
+  }
+}
+
+function editSupplement(id, name, price, stock, desc) {
+  document.getElementById("supplementId").value = id;
+  document.getElementById("supplementName").value = name;
+  document.getElementById("supplementPrice").value = price;
+  document.getElementById("supplementStock").value = stock;
+  document.getElementById("supplementDesc").value = desc;
+}
+function resetMemberForm() {
+  document.getElementById("addMemberForm").reset();
+  document.getElementById("memberId").value = "";
+}
+function resetSupplementForm() {
+  document.getElementById("addSupplementForm").reset();
+  document.getElementById("supplementId").value = "";
+}
+function loadDietMemberDropdown() {
+  const db = firebase.firestore();
+  const select = document.getElementById("dietMemberSelect");
+  select.innerHTML = "";
+
+  db.collection("members").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const option = document.createElement("option");
+      option.value = doc.id;
+      option.textContent = `${data.Name} (${data.Email})`;
+      select.appendChild(option);
+    });
+  });
+}
+document.getElementById("dietForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const db = firebase.firestore();
+  const dietId = document.getElementById("dietForm").getAttribute("data-id");
+  const memberId = document.getElementById("dietMemberSelect").value;
+  const dietType = document.getElementById("dietType").value;
+  const meals = document.getElementById("meals").value.trim();
+
+  // Get selected member name
+  const selectedMember = document.getElementById("dietMemberSelect");
+  const memberName = selectedMember.options[selectedMember.selectedIndex].text;
+
+  const dietData = {
+    memberId,
+    memberName,
+    dietType,
+    meals,
+    timestamp: new Date()
+  };
+
+  if (dietId) {
+    // Update existing diet plan
+    db.collection("dietPlans").doc(dietId).update(dietData).then(() => {
+      alert("Diet plan updated!");
+      resetDietForm();
+      loadDietPlans();
+    });
+  } else {
+    // Add new diet plan
+    db.collection("dietPlans").add(dietData).then(() => {
+      alert("Diet plan saved!");
+      resetDietForm();
+      loadDietPlans();
+    });
+  }
+});
+function loadDietPlans() {
+  const db = firebase.firestore();
+  const tbody = document.getElementById("dietBody");
+  tbody.innerHTML = "";
+
+  db.collection("dietPlans").orderBy("timestamp", "desc").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const row = `<tr>
+        <td>${data.memberName}</td>
+        <td>${data.dietType}</td>
+        <td>${data.meals}</td>
+        <td>
+          <button onclick="editDiet('${doc.id}', '${data.memberId}', '${data.dietType}', \`${data.meals.replace(/`/g, "\\`")}\`)">Edit</button>
+          <button onclick="deleteDiet('${doc.id}')">Delete</button>
+        </td>
+      </tr>`;
+      tbody.innerHTML += row;
+    });
+  });
+}
+function editDiet(id, memberId, dietType, meals) {
+  document.getElementById("dietMemberSelect").value = memberId;
+  document.getElementById("dietType").value = dietType;
+  document.getElementById("meals").value = meals;
+  document.getElementById("dietForm").setAttribute("data-id", id);
+}
+function deleteDiet(id) {
+  const db = firebase.firestore();
+  if (confirm("Delete this diet plan?")) {
+    db.collection("dietPlans").doc(id).delete().then(() => {
+      alert("Diet plan deleted.");
+      loadDietPlans();
+    });
+  }
+}
+function resetDietForm() {
+  document.getElementById("dietForm").reset();
+  document.getElementById("dietForm").removeAttribute("data-id");
+}
+
+
+  </script>
+</body>
+</html>

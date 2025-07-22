@@ -1,0 +1,392 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  color: #1e293b;
+  line-height: 1.6;
+  min-height: 100vh;
+  padding: 2rem;
+  position: relative;
+}
+
+/* Header with logout button */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e2e8f0;
+  z-index: 100;
+}
+
+/* Logout button in top right */
+button[onclick="logout()"] {
+  position: fixed;
+  top: 1.5rem;
+  right: 2rem;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  z-index: 101;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+button[onclick="logout()"]:hover {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+}
+
+/* Main content with top margin for fixed header */
+body > * {
+  margin-top: 100px;
+}
+
+body > *:first-child {
+  margin-top: 120px;
+}
+
+/* Main heading */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  background: linear-gradient(135deg, #1e40af, #0891b2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Section headings */
+h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 3rem 0 1.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid #e2e8f0;
+  position: relative;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, #1e40af, #0891b2);
+  border-radius: 2px;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: none;
+  margin-bottom: 2rem;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+thead {
+  background: linear-gradient(135deg, #1e40af, #0891b2);
+}
+
+thead th {
+  color: white;
+  font-weight: 600;
+  padding: 1.25rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+}
+
+tbody td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+  background: #f8fafc;
+  transform: scale(1.01);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Status styling */
+td:contains("Paid") {
+  color: #059669;
+  font-weight: 600;
+}
+
+td:contains("Pending") {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* Notifications list styling */
+#notificationList {
+  list-style: none;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+#notificationList li {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+#notificationList li:last-child {
+  border-bottom: none;
+}
+
+#notificationList li:hover {
+  background: #f8fafc;
+  transform: translateX(4px);
+}
+
+#notificationList li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(135deg, #1e40af, #0891b2);
+}
+
+/* Empty state styling */
+#notificationList:empty::after {
+  content: 'No notifications at this time';
+  display: block;
+  padding: 2rem;
+  text-align: center;
+  color: #64748b;
+  font-style: italic;
+}
+
+tbody:empty::after {
+  content: 'No bill receipts found';
+  display: block;
+  padding: 2rem;
+  text-align: center;
+  color: #64748b;
+  font-style: italic;
+  grid-column: 1 / -1;
+}
+
+/* Remove default br spacing */
+br {
+  display: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+  
+  button[onclick="logout()"] {
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+  
+  body > *:first-child {
+    margin-top: 100px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  table {
+    font-size: 0.875rem;
+  }
+  
+  thead th,
+  tbody td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  #notificationList li {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  /* Make tables horizontally scrollable on very small screens */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  thead,
+  tbody,
+  tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  thead th {
+    min-width: 120px;
+  }
+  
+  tbody td {
+    min-width: 120px;
+  }
+}
+
+/* Animation for smooth page load */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h1,
+h2,
+table,
+#notificationList {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+h2 {
+  animation-delay: 0.1s;
+}
+
+table {
+  animation-delay: 0.2s;
+}
+
+#notificationList {
+  animation-delay: 0.3s;
+}
+
+/* Enhanced focus states for accessibility */
+*:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: all 0.2s ease;
+}
+
+/* Card-like appearance for main content sections */
+body > h2 + table,
+body > h2 + #notificationList {
+  margin-top: 1rem;
+}
+
+/* Professional styling for amount display */
+td:nth-child(2) {
+  font-weight: 600;
+  color: #059669;
+}
+
+/* Date formatting */
+td:nth-child(3) {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+/* Package name styling */
+td:nth-child(1) {
+  font-weight: 600;
+  color: #1e40af;
+}
+
+/* Description styling */
+td:nth-child(5) {
+  color: #64748b;
+  font-style: italic;
+}
+
+/* Notification styling improvements */
+#notificationList li {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
+  backdrop-filter: blur(10px);
+}
+
+/* Status badges */
+td:contains("Paid")::before {
+  content: '✓ ';
+  color: #059669;
+}
+
+td:contains("Pending")::before {
+  content: '⏳ ';
+  color: #dc2626;
+}
+
+/* Hover effects for better interactivity */
+table:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+#notificationList:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
