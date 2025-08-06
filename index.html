@@ -6,13 +6,18 @@
   <link rel="stylesheet" href="./Styles/index.css">
 </head>
 <body>
-  <h2>Login</h2>
+  <h2>Login---</h2>
 
   <form id="loginForm">
-    <input type="email" id="email" placeholder="Email" required /><br /><br />
-    <input type="password" id="password" placeholder="Password" required /><br /><br />
-    <button type="submit">Login</button>
-  </form>
+  <input type="email" id="email" placeholder="Email" required /><br />
+  <span id="emailError" class="error"></span><br />
+
+  <input type="password" id="password" placeholder="Password" required /><br />
+  <span id="passwordError" class="error"></span><br />
+
+  <button type="submit">Login</button>
+</form>
+
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -21,27 +26,49 @@
   <script src="js/firebase-config.js"></script>
 
   <script>
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-      e.preventDefault();
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
 
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+    // Clear previous errors
+    document.getElementById("email").classList.remove("invalid");
+    document.getElementById("password").classList.remove("invalid");
+    document.getElementById("emailError").textContent = "";
+    document.getElementById("passwordError").textContent = "";
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-          if (user.email === "admin@gym.com") {
-            window.location.href = "admin.html";
-          } else {
-            window.location.href = "member.html";
-          }
-        })
-        .catch((error) => {
-          console.error("Login failed:", error.message);
-          alert("Login failed: " + error.message);
-        });
-    });
-  </script>
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        if (user.email === "admin@gym.com") {
+          window.location.href = "admin.html";
+        } else {
+          window.location.href = "member.html";
+        }
+      })
+      .catch((error) => {
+        console.error("Login failed:", error.message);
+        // Handle specific errors
+        switch (error.code) {
+          case "auth/invalid-email":
+            document.getElementById("email").classList.add("invalid");
+            document.getElementById("emailError").textContent = "Invalid email format.";
+            break;
+          case "auth/user-not-found":
+            document.getElementById("email").classList.add("invalid");
+            document.getElementById("emailError").textContent = "No account found with this email.";
+            break;
+          case "auth/wrong-password":
+            document.getElementById("password").classList.add("invalid");
+            document.getElementById("passwordError").textContent = "Incorrect password.";
+            break;
+          default:
+            document.getElementById("emailError").textContent = "Login failed. Please try again.";
+        }
+      });
+  });
+</script>
+
 </body>
 </html>

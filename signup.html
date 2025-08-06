@@ -7,12 +7,19 @@
 <body>
   <h2>Sign Up as Member</h2>
 
-  <form id="signupForm">
-    <input type="text" id="name" placeholder="Full Name" required /><br /><br />
-    <input type="email" id="email" placeholder="Email" required /><br /><br />
-    <input type="password" id="password" placeholder="Password" required /><br /><br />
-    <button type="submit">Sign Up</button>
-  </form>
+ <form id="signupForm">
+  <input type="text" id="name" placeholder="Full Name" required /><br />
+  <span id="nameError" class="error"></span><br />
+
+  <input type="email" id="email" placeholder="Email" required /><br />
+  <span id="emailError" class="error"></span><br />
+
+  <input type="password" id="password" placeholder="Password" required /><br />
+  <span id="passwordError" class="error"></span><br />
+
+  <button type="submit">Sign Up</button>
+</form>
+
 
   <p>Already have an account? <a href="index.html">Login</a></p>
 
@@ -23,35 +30,48 @@
   <script src="js/firebase-config.js"></script>
 
   <script>
-    document.getElementById("signupForm").addEventListener("submit", function (e) {
-      e.preventDefault();
+  document.getElementById("signupForm").addEventListener("submit", function (e) {
+    e.preventDefault();
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-      // Step 1: Create Firebase Auth account
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
 
-          // Step 2: Save profile in Firestore
-          return firebase.firestore().collection("members").doc(user.uid).set({
-            Name: name,
-            Email: email,
-            Phone: "", // Empty by default
-            Payment: false // Default is not paid
-          });
-        })
-        .then(() => {
-          alert("Signup successful!");
-          window.location.href = "member.html";
-        })
-        .catch((error) => {
-          console.error("Signup error:", error.message);
-          alert("Signup failed: " + error.message);
+        return firebase.firestore().collection("members").doc(user.uid).set({
+          Name: name,
+          Email: email,
+          Phone: "", // Empty by default
+          Payment: false
         });
-    });
-  </script>
+      })
+      .then(() => {
+        alert("Signup successful!");
+        window.location.href = "member.html";
+      })
+      .catch((error) => {
+        console.error("Signup error:", error.message);
+
+        // Handle specific Firebase auth errors
+        switch (error.code) {
+          case "auth/invalid-email":
+            alert("The email address is not valid.");
+            break;
+          case "auth/email-already-in-use":
+            alert("The email is already registered. Please use a different email.");
+            break;
+          case "auth/weak-password":
+            alert("Password should be at least 6 characters.");
+            break;
+          default:
+            alert("Signup failed: " + error.message);
+        }
+      });
+  });
+</script>
+
 </body>
 </html>
